@@ -1,118 +1,79 @@
-#pragma once
 #include <iostream>
+#include "Vector.h"
 
-class Vector
+using namespace std;
+
+int main()
 {
-private:
-    int* data;
-    int size;
-    int capacity;
+    Vector vec;
 
-    void resize()
+    int choice;
+
+    do
     {
-        capacity *= 2;
+        cout << "\n1. Add to end" << endl;
+        cout << "2. Insert by index" << endl;
+        cout << "3. Remove by index" << endl;
+        cout << "4. Get element" << endl;
+        cout << "5. Show size" << endl;
+        cout << "6. Show capacity" << endl;
+        cout << "7. Print vector" << endl;
+        cout << "0. Exit" << endl;
 
-        int* newData = new int[capacity];
+        cin >> choice;
 
-        for (int i = 0; i < size; i++)
+        if (choice == 1)
         {
-            newData[i] = data[i];
+            int value;
+            cout << "Value: ";
+            cin >> value;
+
+            vec.pushBack(value);
+        }
+        else if (choice == 2)
+        {
+            int index, value;
+
+            cout << "Index: ";
+            cin >> index;
+
+            cout << "Value: ";
+            cin >> value;
+
+            vec.insert(index, value);
+        }
+        else if (choice == 3)
+        {
+            int index;
+
+            cout << "Index: ";
+            cin >> index;
+
+            vec.remove(index);
+        }
+        else if (choice == 4)
+        {
+            int index;
+
+            cout << "Index: ";
+            cin >> index;
+
+            cout << "Element: " << vec.get(index) << endl;
+        }
+        else if (choice == 5)
+        {
+            cout << "Size: " << vec.getSize() << endl;
+        }
+        else if (choice == 6)
+        {
+            cout << "Capacity: " << vec.getCapacity() << endl;
+        }
+        else if (choice == 7)
+        {
+            vec.print();
         }
 
-        delete[] data;
-        data = newData;
-    }
+    } while (choice != 0);
 
-public:
-    Vector()
-    {
-        capacity = 2;
-        size = 0;
-        data = new int[capacity];
-    }
-
-    ~Vector()
-    {
-        delete[] data;
-    }
-
-    void pushBack(int value)
-    {
-        if (size >= capacity)
-        {
-            resize();
-        }
-
-        data[size] = value;
-        size++;
-    }
-
-    void insert(int index, int value)
-    {
-        if (index < 0 || index > size)
-        {
-            std::cout << "Wrong index\n";
-            return;
-        }
-
-        if (size >= capacity)
-        {
-            resize();
-        }
-
-        for (int i = size; i > index; i--)
-        {
-            data[i] = data[i - 1];
-        }
-
-        data[index] = value;
-        size++;
-    }
-
-    void remove(int index)
-    {
-        if (index < 0 || index >= size)
-        {
-            std::cout << "Wrong index\n";
-            return;
-        }
-
-        for (int i = index; i < size - 1; i++)
-        {
-            data[i] = data[i + 1];
-        }
-
-        size--;
-    }
-
-    int get(int index)
-    {
-        if (index < 0 || index >= size)
-        {
-            std::cout << "Wrong index\n";
-            return -1;
-        }
-
-        return data[index];
-    }
-
-    int getSize()
-    {
-        return size;
-    }
-
-    int getCapacity()
-    {
-        return capacity;
-    }
-
-    void print()
-    {
-        for (int i = 0; i < size; i++)
-        {
-            std::cout << data[i] << " ";
-        }
-
-        std::cout << std::endl;
-    }
-};
+    return 0;
+}
