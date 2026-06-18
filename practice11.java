@@ -1,4 +1,4 @@
-```java
+java
 import java.util.Scanner;
 import java.util.Random;
 import java.util.InputMismatchException;
@@ -190,4 +190,3 @@ public class Hangmann {
         System.out.println("=======");
     }
 }
-```
