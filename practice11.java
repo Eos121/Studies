@@ -1,20 +1,19 @@
-java
 import java.util.Scanner;
 import java.util.Random;
 import java.util.InputMismatchException;
 
-public class Hangmann {
+public class HangmanGame {
 
     public static void main(String[] args) {
 
-        Scanner scanner = new Scanner(System.in);
-        Random random = new Random();
+        Scanner input = new Scanner(System.in);
+        Random rand = new Random();
 
-        String[] easy = {"cat", "house", "apple", "mouse", "man"};
-        String[] medium = {"school", "car", "teacher", "phone"};
-        String[] hard = {"program", "algorithm", "computer", "java"};
+        String[] easyWords = {"cat", "house", "apple", "mouse", "man"};
+        String[] mediumWords = {"school", "car", "teacher", "phone"};
+        String[] hardWords = {"program", "algorithm", "computer", "java"};
 
-        String word = "";
+        String secretWord = "";
 
         try {
 
@@ -23,13 +22,13 @@ public class Hangmann {
             System.out.println("2 - Medium");
             System.out.println("3 - Hard");
 
-            int choose;
+            int difficulty;
 
             try {
-                choose = scanner.nextInt();
-                scanner.nextLine();
+                difficulty = input.nextInt();
+                input.nextLine();
 
-                if (choose < 1 || choose > 3) {
+                if (difficulty < 1 || difficulty > 3) {
                     throw new IllegalArgumentException("Wrong difficulty");
                 }
 
@@ -41,98 +40,98 @@ public class Hangmann {
                 return;
             }
 
-            if (choose == 1) {
-                word = easy[random.nextInt(easy.length)];
-            } else if (choose == 2) {
-                word = medium[random.nextInt(medium.length)];
+            if (difficulty == 1) {
+                secretWord = easyWords[rand.nextInt(easyWords.length)];
+            } else if (difficulty == 2) {
+                secretWord = mediumWords[rand.nextInt(mediumWords.length)];
             } else {
-                word = hard[random.nextInt(hard.length)];
+                secretWord = hardWords[rand.nextInt(hardWords.length)];
             }
 
-            char[] hidden = new char[word.length()];
+            char[] guessedWord = new char[secretWord.length()];
 
-            for (int i = 0; i < hidden.length; i++) {
-                hidden[i] = '_';
+            for (int i = 0; i < guessedWord.length; i++) {
+                guessedWord[i] = '_';
             }
 
-            char[] used = new char[50];
-            int usedCount = 0;
+            char[] enteredLetters = new char[50];
+            int enteredCount = 0;
 
-            int errors = 0;
-            int max = 6;
+            int mistakes = 0;
+            int maxMistakes = 6;
 
-            boolean win = false;
+            boolean isWin = false;
 
-            while (errors < max && !win) {
+            while (mistakes < maxMistakes && !isWin) {
 
-                draw(errors);
+                drawHangman(mistakes);
 
                 System.out.print("\nWord: ");
 
-                for (int i = 0; i < hidden.length; i++) {
-                    System.out.print(hidden[i] + " ");
+                for (int i = 0; i < guessedWord.length; i++) {
+                    System.out.print(guessedWord[i] + " ");
                 }
 
                 System.out.println();
-                System.out.println("Errors: " + errors + "/" + max);
+                System.out.println("Errors: " + mistakes + "/" + maxMistakes);
 
                 try {
 
                     System.out.print("Enter letter: ");
 
-                    String input = scanner.nextLine();
+                    String userInput = input.nextLine();
 
-                    if (input.length() == 0) {
+                    if (userInput.length() == 0) {
                         throw new IllegalArgumentException("Empty input");
                     }
 
-                    if (input.length() > 1) {
+                    if (userInput.length() > 1) {
                         throw new IllegalArgumentException("Only one letter");
                     }
 
-                    char letter = Character.toLowerCase(input.charAt(0));
+                    char guess = Character.toLowerCase(userInput.charAt(0));
 
-                    if (!Character.isLetter(letter)) {
+                    if (!Character.isLetter(guess)) {
                         throw new IllegalArgumentException("Only letters allowed");
                     }
 
-                    boolean already = false;
+                    boolean alreadyEntered = false;
 
-                    for (int i = 0; i < usedCount; i++) {
-                        if (used[i] == letter) {
-                            already = true;
+                    for (int i = 0; i < enteredCount; i++) {
+                        if (enteredLetters[i] == guess) {
+                            alreadyEntered = true;
                             break;
                         }
                     }
 
-                    if (already) {
+                    if (alreadyEntered) {
                         throw new IllegalArgumentException("Letter already used");
                     }
 
-                    used[usedCount] = letter;
-                    usedCount++;
+                    enteredLetters[enteredCount] = guess;
+                    enteredCount++;
 
-                    boolean found = false;
+                    boolean isFound = false;
 
-                    for (int i = 0; i < word.length(); i++) {
+                    for (int i = 0; i < secretWord.length(); i++) {
 
-                        if (word.charAt(i) == letter) {
-                            hidden[i] = letter;
-                            found = true;
+                        if (secretWord.charAt(i) == guess) {
+                            guessedWord[i] = guess;
+                            isFound = true;
                         }
                     }
 
-                    if (!found) {
+                    if (!isFound) {
                         System.out.println("No letter");
-                        errors++;
+                        mistakes++;
                     }
 
-                    win = true;
+                    isWin = true;
 
-                    for (int i = 0; i < hidden.length; i++) {
+                    for (int i = 0; i < guessedWord.length; i++) {
 
-                        if (hidden[i] == '_') {
-                            win = false;
+                        if (guessedWord[i] == '_') {
+                            isWin = false;
                             break;
                         }
                     }
@@ -142,46 +141,46 @@ public class Hangmann {
                 }
             }
 
-            draw(errors);
+            drawHangman(mistakes);
 
-            if (win) {
+            if (isWin) {
                 System.out.println("\nYou win");
-                System.out.println("Word: " + word);
+                System.out.println("Word: " + secretWord);
             } else {
                 System.out.println("\nYou lose");
-                System.out.println("Word was: " + word);
+                System.out.println("Word was: " + secretWord);
             }
 
         } catch (Exception e) {
             System.out.println("Program error");
         }
 
-        scanner.close();
+        input.close();
     }
 
-    static void draw(int errors) {
+    static void drawHangman(int mistakes) {
 
         System.out.println("\n +---+");
         System.out.println(" |   |");
 
-        if (errors >= 1)
+        if (mistakes >= 1)
             System.out.println(" |   O");
         else
             System.out.println(" |");
 
-        if (errors >= 2)
+        if (mistakes >= 2)
             System.out.println(" |   |");
         else
             System.out.println(" |");
 
-        if (errors == 3)
+        if (mistakes == 3)
             System.out.println(" |  /|");
-        else if (errors >= 4)
+        else if (mistakes >= 4)
             System.out.println(" |  /|\\");
         else
             System.out.println(" |");
 
-        if (errors >= 5)
+        if (mistakes >= 5)
             System.out.println(" |  / \\");
         else
             System.out.println(" |");
